@@ -1,0 +1,95 @@
+/* ========= Base Navbar Style ========= */
+.navbar {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2563eb;
+    text-decoration: none;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    font-size: 18px;
+  }
+  
+  .nav-links a {
+    color: #374151;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    color: #2563eb;
+  }
+  
+  /* ========= Hamburger Icon Style ========= */
+  .hamburger {
+    display: none; /* Hidden by default on larger screens */
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  /* ========= Responsive for Tablets (max-width: 768px) ========= */
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 12px 20px;
+    }
+  
+    .logo {
+      font-size: 22px; /* Slightly smaller logo for tablets */
+    }
+  
+    .nav-links {
+      display: none; /* Initially hide the nav-links on mobile */
+      flex-direction: column;
+      gap: 12px;
+      font-size: 16px;
+      width: 100%;
+      padding-top: 8px;
+    }
+  
+    .nav-links.show {
+      display: flex; /* Show links when 'show' class is applied */
+    }
+  
+    .nav-links a {
+      display: block;
+      width: 100%;
+    }
+  
+    /* Show the hamburger icon on smaller screens */
+    .hamburger {
+      display: block;
+    }
+  }
+  
+  /* ========= Responsive for Mobile Phones (max-width: 480px) ========= */
+  @media (max-width: 480px) {
+    .logo {
+      font-size: 20px;
+    }
+  
+    .nav-links {
+      font-size: 14px; 
+    }
+  
+    .navbar {
+      padding: 10px 16px;
+    }
+  }
+  
