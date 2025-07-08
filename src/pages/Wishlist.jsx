@@ -1,11 +1,15 @@
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Wishlist.css";
 
 const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className="wishlist-container">
@@ -20,7 +24,17 @@ const Wishlist = () => {
               <Link to={`/product/${product.id}`} className="wishlist-title-link">{product.title}</Link>
               <p className="wishlist-price">${product.price}</p>
               <div className="wishlist-buttons">
-                <button onClick={() => addToCart(product)}>Add to Cart</button>
+                <button
+                  onClick={() => {
+                    if (user) {
+                      addToCart(product);
+                    } else {
+                      navigate("/login", { state: { from: location.pathname } });
+                    }
+                  }}
+                >
+                  Add to Cart
+                </button>
                 <button onClick={() => removeFromWishlist(product.id)}>Remove</button>
               </div>
             </div>

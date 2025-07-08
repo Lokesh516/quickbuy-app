@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -6,10 +6,13 @@ import "./ProductDetails.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState(null);
-  const { addToCart } = useCart();
-  const { user } = useAuth(); 
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+
+  const [product, setProduct] = useState(null);
   const [newReview, setNewReview] = useState("");
   const [newRating, setNewRating] = useState(5);
 
@@ -35,19 +38,27 @@ const ProductDetails = () => {
   }, [reviews, id]);
 
   const handleReviewSubmit = (e) => {
-  e.preventDefault();
-  if (!newReview.trim()) return;
-  setReviews((prev) => [
-    ...prev,
-    {
-      text: newReview,
-      rating: newRating,
-      user: user?.username || "Anonymous"
-    },
-  ]);
-  setNewReview("");
-  setNewRating(5);
-};
+    e.preventDefault();
+
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+
+    if (!newReview.trim()) return;
+
+    setReviews((prev) => [
+      ...prev,
+      {
+        text: newReview.trim(),
+        rating: newRating,
+        user: user.username,
+      },
+    ]);
+
+    setNewReview("");
+    setNewRating(5);
+  };
 
   const averageRating = () => {
     if (!reviews.length) return null;
@@ -89,43 +100,63 @@ const ProductDetails = () => {
         <p className="details-price">${product.price}</p>
         <p className="details-desc">{product.description}</p>
 
-        {user ? (
-          <button onClick={() => addToCart(product)} className="details-add-btn">
-            Add to Cart
-          </button>
-        ) : (
-          <p className="login-msg">⚠️ Please login to add to cart</p>
-        )}
+        <button
+          onClick={() => {
+            if (user) {
+              addToCart(product);
+            } else {
+              navigate("/login", { state: { from: location.pathname } });
+            }
+          }}
+          className="details-add-btn"
+        >
+          Add to Cart
+        </button>
 
         <h3 className="review-heading">Leave a Review</h3>
-        <form onSubmit={handleReviewSubmit}>
-          <textarea
-            className="review-input"
-            value={newReview}
-            onChange={(e) => setNewReview(e.target.value)}
-            placeholder="Write your review here..."
-          />
-          <div style={{ marginTop: "10px" }}>
-            <span style={{ fontWeight: "500", marginRight: "8px" }}>Your Rating:</span>
-            {renderStars(newRating, true)}
-          </div>
-          <button type="submit" className="submit-review-btn">
-            Submit Review
-          </button>
-        </form>
+        {!user ? (
+          <p className="login-msg">
+            ⚠️ Please{" "}
+            <span
+              onClick={() => navigate("/login", { state: { from: location.pathname } })}
+              style={{ color: "#2563eb", cursor: "pointer" }}
+            >
+              log in
+            </span>{" "}
+            to leave a review.
+          </p>
+        ) : (
+          <form onSubmit={handleReviewSubmit}>
+            <textarea
+              className="review-input"
+              value={newReview}
+              onChange={(e) => setNewReview(e.target.value)}
+              placeholder="Write your review here..."
+            />
+            <div style={{ marginTop: "10px" }}>
+              <span style={{ fontWeight: "500", marginRight: "8px" }}>
+                Your Rating:
+              </span>
+              {renderStars(newRating, true)}
+            </div>
+            <button type="submit" className="submit-review-btn">
+              Submit Review
+            </button>
+          </form>
+        )}
 
-       {reviews.length > 0 && (
-  <>
-    <h4 className="review-heading">User Reviews</h4>
-    <ul className="review-list">
-      {reviews.map((r, i) => (
-        <li key={i} className="review-item">
-          <strong>{r.user}</strong>: {renderStars(r.rating)} – {r.text}
-        </li>
-      ))}
-    </ul>
-  </>
-)}
+        {reviews.length > 0 && (
+          <>
+            <h4 className="review-heading">User Reviews</h4>
+            <ul className="review-list">
+              {reviews.map((r, i) => (
+                <li key={i} className="review-item">
+                  <strong>{r.user}</strong>: {renderStars(r.rating)} – {r.text}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );

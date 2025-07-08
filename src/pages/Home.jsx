@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useAuth } from "../context/AuthContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Home.css";
 
 const Home = () => {
@@ -13,6 +13,8 @@ const Home = () => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
@@ -45,7 +47,6 @@ const Home = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* 🔗 Category Links */}
       <div className="category-buttons">
         {categories.map((cat) => (
           <Link
@@ -58,7 +59,6 @@ const Home = () => {
         ))}
       </div>
 
-      {/* 🛍️ Product Grid */}
       <div className="products-grid">
         {filteredProducts.length === 0 ? (
           <p>No matching products found.</p>
@@ -90,16 +90,19 @@ const Home = () => {
                 </button>
               </div>
               <p className="product-price">${product.price}</p>
-              {user ? (
-                <button
-                  onClick={() => addToCart(product)}
-                  className="add-to-cart-btn"
-                >
-                  Add to Cart
-                </button>
-              ) : (
-                <p className="login-msg">Login to add items</p>
-              )}
+
+              <button
+                onClick={() => {
+                  if (user) {
+                    addToCart(product);
+                  } else {
+                    navigate("/login", { state: { from: location.pathname } });
+                  }
+                }}
+                className="add-to-cart-btn"
+              >
+                Add to Cart
+              </button>
             </div>
           ))
         )}
