@@ -2,9 +2,9 @@ import { useCart } from "../context/CartContext";
 import "./Cart.css";
 
 const Cart = () => {
-  const { cart, removeFromCart } = useCart();
-  const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
-
+  const { cart, removeFromCart,updateQuantity } = useCart();
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  
   return (
     <div className="cart-container">
       <h2 className="cart-title">Your Cart</h2>
@@ -24,7 +24,13 @@ const Cart = () => {
                   />
                   <div>
                     <h3 className="item-title">{item.title}</h3>
-                    <p className="item-price">${item.price}</p>
+                    <div className="quantity-controls">
+                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                      <span> {item.quantity} </span>
+                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                    </div>
+                    <p className="item-price">${(item.price * item.quantity).toFixed(2)}</p>
+
                   </div>
                 </div>
                 <button

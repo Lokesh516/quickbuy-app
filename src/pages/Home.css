@@ -1,12 +1,11 @@
-/* ========= Home Container Style ========= */
 .home-container {
-    padding: 24px 16px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background: linear-gradient(to bottom, #eff6ff, #ffffff, #e0f2fe);
-    min-height: 100vh;
-  }
-  
+  max-width: 1440px;
+  padding: 25px 16px 24px; 
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding-bottom: 60px; 
+}
+
   .home-title {
     font-size: 32px;
     font-weight: bold;
@@ -85,7 +84,7 @@
     }
   
     .products-grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Reduce grid size for tablets */
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
       gap: 16px;
     }
   
@@ -94,11 +93,11 @@
     }
   
     .product-title {
-      font-size: 14px; /* Reduce title font size on smaller screens */
+      font-size: 14px; 
     }
   
     .product-price {
-      font-size: 16px; /* Smaller price font size for tablets */
+      font-size: 16px;
     }
   
     .add-to-cart-btn {
@@ -114,7 +113,7 @@
     }
   
     .products-grid {
-      grid-template-columns: 1fr; /* Single column layout for mobile */
+      grid-template-columns: 1fr; 
       gap: 16px;
     }
   
@@ -136,3 +135,67 @@
     }
   }
   
+  .product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wishlist-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 18px;
+}
+
+.search-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  margin: 20px auto; 
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  display: block; 
+}
+
+.login-msg {
+  color: #dc2626;
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.category-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.category-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.category-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.category-btn.active {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.category-btn-link {
+  text-decoration: none;
+  margin-right: 8px;
+}
+

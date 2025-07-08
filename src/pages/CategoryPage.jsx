@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useAuth } from "../context/AuthContext";
@@ -6,10 +7,10 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./Home.css";
 
-const Home = () => {
+const CategoryPage = () => {
+  const { categoryName } = useParams();
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { user } = useAuth();
@@ -17,51 +18,33 @@ const Home = () => {
   useEffect(() => {
     fetch("https://fakestoreapi.com/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
-  }, []);
+      .then((data) => {
+        const filtered = data.filter((p) => p.category === categoryName);
+        setProducts(filtered);
+      });
+  }, [categoryName]);
 
+  // ✅ Filter based on search term
   const filteredProducts = products.filter((product) =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const categories = [
-    "All",
-    "electronics",
-    "jewelery",
-    "men's clothing",
-    "women's clothing",
-  ];
-
   return (
     <div className="home-container">
-      <h2 className="home-title">Products</h2>
+      <h2 className="home-title">{categoryName.toUpperCase()}</h2>
 
-      {/* 🔍 Search */}
+      {/* ✅ Search Input */}
       <input
         type="text"
-        placeholder="Search products..."
+        placeholder="Search in this category..."
         className="search-box"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* 🔗 Category Links */}
-      <div className="category-buttons">
-        {categories.map((cat) => (
-          <Link
-            key={cat}
-            to={cat === "All" ? "/" : `/category/${cat}`}
-            className="category-btn-link"
-          >
-            <button className="category-btn">{cat}</button>
-          </Link>
-        ))}
-      </div>
-
-      {/* 🛍️ Product Grid */}
       <div className="products-grid">
         {filteredProducts.length === 0 ? (
-          <p>No matching products found.</p>
+          <p>No products found in this category.</p>
         ) : (
           filteredProducts.map((product) => (
             <div key={product.id} className="product-card">
@@ -108,4 +91,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default CategoryPage;
